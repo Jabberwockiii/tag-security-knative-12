@@ -19,11 +19,25 @@ This document is intended to assess the current state of security for the Knativ
 ## Metadata
 | | |
 |-----------|------|
-| Software | https://github.com/knative/serving<‌br‌>https://github.com/knative/eventing <‌br‌>https://github.com/knative/func |
+| Software | https://github.com/knative/serving
+
+https://github.com/knative/eventing 
+
+https://github.com/knative/func |
 | Security Provider? | No — the primary function of Knative is to provide a set of components and building blocks to extend Kubernetes functionality and should not be considered primarily a security provider. |
 | Languages | Go |
-| Software Bill of Materials | Packages: This Knative repo is a storage site for common Knative packages across all other Knative repositories for each component: https://github.com/knative/pkg <‌br‌> Each version release description contains a list of added or updated direct dependencies available to view. https://github.com/knative/func/releases https://github.com/knative/serving/releases https://github.com/knative/eventing/releases <br> However, all the Go libraries that Knative is dependent on are not readily available. Additionally, I cannot find a FULL auto-generated list of Knative’s direct dependencies other than the ones that were added or changed in each version release. This is a potential weakness and should be added to the roadmap. |
-| Security Links | Knative security and disclosure information: https://knative.dev/docs/reference/security/ <br> Knative threat model: https://github.com/knative/community/blob/main/working-groups/security/threat-model.md <br> Response policy to security breach: https://github.com/knative/community/blob/main/working-groups/security/responding.md <br> Configuration details for serving and eventing, including default configmaps: https://github.com/knative/serving/blob/main/config/README.md https://github.com/knative/eventing/tree/main/config |
+| Software Bill of Materials | Packages: This Knative repo is a storage site for common Knative packages across all other Knative repositories for each component: https://github.com/knative/pkg 
+
+Each version release description contains a list of added or updated direct dependencies available to view. https://github.com/knative/func/releases https://github.com/knative/serving/releases https://github.com/knative/eventing/releases 
+
+However, all the Go libraries that Knative is dependent on are not readily available. Additionally, I cannot find a FULL auto-generated list of Knative’s direct dependencies other than the ones that were added or changed in each version release. This is a potential weakness and should be added to the roadmap. |
+| Security Links | Knative security and disclosure information: https://knative.dev/docs/reference/security/ 
+
+Knative threat model: https://github.com/knative/community/blob/main/working-groups/security/threat-model.md 
+
+Response policy to security breach: https://github.com/knative/community/blob/main/working-groups/security/responding.md 
+
+Configuration details for serving and eventing, including default configmaps: https://github.com/knative/serving/blob/main/config/README.md https://github.com/knative/eventing/tree/main/config |
 |-----------|------|
 ## Overview
 Knative is an open-source platform that enhances Kubernetes, focusing on the efficient deployment and management of serverless, cloud-native applications. It introduces two main components: Serving and Eventing. Serving automates the scaling and management of serverless workloads, while Eventing deals with event-driven architecture, managing and triggering serverless functions. This integration with Kubernetes not only streamlines the deployment process but also boosts developer productivity and reduces operational costs. Knative's cloud-agnostic nature and extensibility make it a versatile choice for diverse serverless computing environments.
@@ -33,16 +47,23 @@ Historically, in the world of container orchestration and cloud-native developme
 In cloud-native ecosystems, especially those using Kubernetes, the management of serverless workloads presented unique challenges. Kubernetes, while powerful, did not natively offer specialized tools for serverless architecture, leading developers to either rely on external tools or build custom solutions. These methods, though effective, lacked uniformity and efficiency, especially in handling auto-scaling, rapid deployment, and event-driven architecture.
 Knative emerged as a solution to these challenges. It was designed to simplify the process of deploying and managing serverless applications on Kubernetes. By providing middleware components, Knative enables developers to focus more on building their applications rather than worrying about the underlying infrastructure.
 ### Actors
-Serving Controller (Service) (https://knative.dev/docs/serving/): This is a central component in Knative responsible for orchestrating the deployment and scaling of serverless workloads. It operates independently, managing the lifecycle of Knative services and their revisions. The Serving Controller is isolated in such a way that even if it encounters issues or vulnerabilities, these do not directly compromise the serverless workloads it manages.
- Deployment and Management of Services: The Serving Controller is responsible for deploying Knative services. It manages the entire lifecycle of these services, from creation and updating to scaling and deletion.
-Handling Revisions: Each time a Knative service is updated (like a change in its code or configuration), the Serving Controller creates a new Revision. Revisions are immutable snapshots of a service at a particular point in time. The Serving Controller ensures that each Revision is correctly deployed and operational.
-Scaling: One of the key features of Knative is automatic scaling, including scaling to zero when a service is not in use. The Serving Controller manages this by monitoring traffic patterns and adjusting the number of active pods (instances of Revisions) accordingly.
-Traffic Routing: The Serving Controller also plays a role in routing traffic to different Revisions. This is important for features like canary deployments or blue-green deployments, where traffic needs to be gradually shifted from one version of a service to another.
+**Serving Controller** (Service) (https://knative.dev/docs/serving/): This is a central component in Knative responsible for orchestrating the deployment and scaling of serverless workloads. It operates independently, managing the lifecycle of Knative services and their revisions. The Serving Controller is isolated in such a way that even if it encounters issues or vulnerabilities, these do not directly compromise the serverless workloads it manages.
+
+1. Deployment and Management of Services: The Serving Controller is responsible for deploying Knative services. It manages the entire lifecycle of these services, from creation and updating to scaling and deletion.
+
+2. Handling Revisions: Each time a Knative service is updated (like a change in its code or configuration), the Serving Controller creates a new Revision. Revisions are immutable snapshots of a service at a particular point in time. The Serving Controller ensures that each Revision is correctly deployed and operational.
+
+3. Scaling: One of the key features of Knative is automatic scaling, including scaling to zero when a service is not in use. The Serving Controller manages this by monitoring traffic patterns and adjusting the number of active pods (instances of Revisions) accordingly.
+
+4. Traffic Routing: The Serving Controller also plays a role in routing traffic to different Revisions. This is important for features like canary deployments or blue-green deployments, where traffic needs to be gradually shifted from one version of a service to another.
 Isolation and Security: The Serving Controller is designed to be isolated in its operation. This means that issues or vulnerabilities within the Serving Controller do not directly compromise the serverless workloads it manages. This isolation is crucial for maintaining the security and integrity of the serverless applications running on Knative.
 Integration with Kubernetes Knative Serving, and by extension the Serving Controller, is built on top of Kubernetes. It leverages Kubernetes features like custom resources and controllers, providing a familiar environment for those who are already experienced with Kubernetes.
-Customization and Extensibility: The Serving Controller allows customization of serverless workloads. Users can specify various configurations like environment variables, resource limits, and request timeouts. This level of customization makes it flexible to cater to diverse application needs.
-Monitoring and Logging: The Serving Controller supports integration with monitoring and logging tools, allowing users to keep track of the performance and health of their serverless applications.
-Revisions (https://knative.dev/docs/concepts/serving-resources/revisions/): These are immutable snapshots of serverless applications, each representing a specific version of a workload. Revisions in Knative are functionally independent; they are scaled and managed autonomously based on demand. Their isolation is crucial as it ensures that a compromise or failure in one Revision does not affect the others or the broader system.
+
+5. Customization and Extensibility: The Serving Controller allows customization of serverless workloads. Users can specify various configurations like environment variables, resource limits, and request timeouts. This level of customization makes it flexible to cater to diverse application needs.
+
+6. Monitoring and Logging: The Serving Controller supports integration with monitoring and logging tools, allowing users to keep track of the performance and health of their serverless applications.
+
+**Revisions** (https://knative.dev/docs/concepts/serving-resources/revisions/): These are immutable snapshots of serverless applications, each representing a specific version of a workload. Revisions in Knative are functionally independent; they are scaled and managed autonomously based on demand. Their isolation is crucial as it ensures that a compromise or failure in one Revision does not affect the others or the broader system.
 
 
 1. Immutable Snapshots: Revisions in Knative are immutable snapshots of serverless applications. Each Revision captures a specific point in time, containing the application code and configuration for each change made to a Knative Service.
@@ -60,14 +81,15 @@ Revisions (https://knative.dev/docs/concepts/serving-resources/revisions/): Thes
 5. Isolation and Independence: Each Revision in Knative is functionally independent and is managed autonomously. This means that changes or issues in one Revision do not affect others. This isolation is crucial for maintaining the stability and security of the entire system.
 
 
-Route and Configuration Resources (https://knative.dev/docs/serving/traffic-management/): These components in Knative act as independent actors. The Route resource is responsible for managing the routing of traffic to different Revisions, while the Configuration resource maintains the desired state for the workloads. Both Route and Configuration operate independently and are isolated from each other and from the workloads they manage, ensuring that vulnerabilities or issues in one do not impact the other or the serverless applications.
+**Route and Configuration Resources** (https://knative.dev/docs/serving/traffic-management/): These components in Knative act as independent actors. The Route resource is responsible for managing the routing of traffic to different Revisions, while the Configuration resource maintains the desired state for the workloads. Both Route and Configuration operate independently and are isolated from each other and from the workloads they manage, ensuring that vulnerabilities or issues in one do not impact the other or the serverless applications.
 
 
-Eventing Components (https://knative.dev/docs/eventing/): Eventing is handled by independent components such as Brokers and Triggers. These actors manage the flow and filtering of events in the system. Their isolation is key, as it prevents a compromised event source or broker from affecting other parts of the system, thereby limiting the scope of potential security breaches.
+**Eventing Components** (https://knative.dev/docs/eventing/): Eventing is handled by independent components such as Brokers and Triggers. These actors manage the flow and filtering of events in the system. Their isolation is key, as it prevents a compromised event source or broker from affecting other parts of the system, thereby limiting the scope of potential security breaches.
 Knative Eventing is a key part of Knative's event-driven architecture, designed to manage the flow and filtering of events in serverless applications. Here are more details about its components and functionalities:
 
 
 1. API-Driven Event Handling Knative Eventing uses a collection of APIs to enable event-driven architecture in applications. These APIs facilitate the routing of events from producers (sources) to consumers (sinks). Additionally, sinks can be configured to respond to HTTP requests by sending response events.
+
 2. Support for Various Workloads: It supports a range of workloads, including standard Kubernetes Services and Knative Serving Services. The eventing model is versatile and accommodates different application types.
 
 
@@ -83,7 +105,7 @@ Knative Eventing is a key part of Knative's event-driven architecture, designed 
 6. Isolation and Security: The isolation of components like Brokers and Triggers is crucial in Knative Eventing. It ensures that a compromised event source or broker does not affect other parts of the system. This design limits the scope of potential security breaches, maintaining the integrity and security of the entire event-driven system.
 
 
-	Knative Functions(https://knative.dev/docs/functions/):
+**Knative Functions**(https://knative.dev/docs/functions/):
 Knative Functions is an extension of the Knative ecosystem, designed to simplify the deployment and management of serverless functions. Similar to Knative Eventing, it has several key components and features that enable efficient and scalable function execution in a cloud-native environment:
 
 
@@ -273,19 +295,25 @@ Knative aims to make scalable, secure, stateless architectures available quickly
 
 
 Security Goals -
-Secure Communication: Knative aims to ensure secure communication over the internet. This includes securing communication between various Knative components, as well as securing the communication channels through which end-users interact with serverless applications.
-Input Validation and Sanitization: Given that serverless applications often touch the internet, Knative aims to provide mechanisms for validating and sanitizing input to prevent common security vulnerabilities. This involves addressing issues such as injection attacks and ensuring that untrusted input is properly handled.
-Sensitive Data Handling: Knative recognizes the importance of handling sensitive data securely. This includes mechanisms to protect sensitive information within serverless applications, whether it's during data processing, storage, or transmission.
-Role-Based Access Control (RBAC): Knative aims to implement robust RBAC mechanisms to control access to its components and resources. This helps ensure that only authorized users and services can interact with and modify KNative deployments.
-Container Image Security: As Knative involves building and deploying container images, the project is likely to emphasize best practices for securing container images, such as using signed images, regularly updating dependencies, and implementing image scanning for vulnerabilities.
+1. Secure Communication: Knative aims to ensure secure communication over the internet. This includes securing communication between various Knative components, as well as securing the communication channels through which end-users interact with serverless applications.
+
+2. Input Validation and Sanitization: Given that serverless applications often touch the internet, Knative aims to provide mechanisms for validating and sanitizing input to prevent common security vulnerabilities. This involves addressing issues such as injection attacks and ensuring that untrusted input is properly handled.
+
+3. Sensitive Data Handling: Knative recognizes the importance of handling sensitive data securely. This includes mechanisms to protect sensitive information within serverless applications, whether it's during data processing, storage, or transmission.
+
+4. Role-Based Access Control (RBAC): Knative aims to implement robust RBAC mechanisms to control access to its components and resources. This helps ensure that only authorized users and services can interact with and modify KNative deployments.
+
+5. Container Image Security: As Knative involves building and deploying container images, the project is likely to emphasize best practices for securing container images, such as using signed images, regularly updating dependencies, and implementing image scanning for vulnerabilities.
 ### Non-Goals
 Long-Term Data Storage - KNative may not intend to provide a solution for long-term data storage. Users might be directed to leverage other storage solutions or databases that are better suited for persistent data.
 Direct Management of Kubernetes Resources - KNative might not aim to expose all the intricacies of Kubernetes resource management directly to end-users. The abstraction provided by KNative is designed to shield users from low-level Kubernetes operations.
 Fine-grained Network Security Policy - Knative may not aim to offer fine-grained network security policy management at the application level. Users are encouraged to leverage Kubernetes Network Policies or other networking solutions for such requirements.
  
 ## Self-assessment Use
-This self-assessment is created by the Knative team (a team of cybersecurity students at NYU) to perform an (external) internal analysis of the project's security. It is not intended to provide a security audit of Knative, or function as an independent assessment or attestation of Knative's security health.
+This self-assessment is created by a team of cybersecurity students at NYU to perform an external analysis of the project's security. It is not intended to provide a security audit of Knative, or function as an independent assessment or attestation of Knative's security health.
+
 This document serves to provide Knative users with an initial understanding of Knative's security, where to find existing security documentation, Knative plans for security, and general overview of Knative security practices, both for development of Knative as well as security of Knative.
+
 This document provides the CNCF TAG-Security with an initial understanding of Knative to assist in a joint-assessment, necessary for projects under incubation. Taken together, this document and the joint-assessment serve as a cornerstone for if and when Knative seeks graduation and is preparing for a security audit.
 
 
@@ -296,10 +324,13 @@ This document provides the CNCF TAG-Security with an initial understanding of Kn
 | Istio | Security Relevant | Istio is an open platform-independent service mesh that provides traffic management, policy enforcement, and telemetry collection. Knative Eventing uses Istio for networking operations like traffic rules, authorization policies, and encryption. |
 | Kubernetes Infrastructure | Critical | Knative is built upon Kubernetes, which is configured with security tools like RBAC, network policies, and secrets. |
 | Security Guard | Security Relevant | Guard help secure microservices, serverless containers and serverless function. It detects and block exploits sent to services and can detect and restart compromised service pods. |
+
 ## Project Compliance
 Not enough information could be gathered to determine exactly what regulatory standards Knative itself complies with. However, Knative is built on Kubernetes, which follows the following regulatory standards depending on what industry it is deployed in: SOC 2, PCI DSS, HIPAA, NIST SP 800-53, GDPR, ISO 27001. It could be said that Knative follows the CNCF Community Code of Conduct and the CNCF IP Policy. This should be easily accessible information and should be considered in the documentation. 
+
 ## Secure Development Practices
 The Knative project is still incubating. The security policies and development practices detailed below are based on open source guidelines and preliminary threat modeling. 
+
 ### Deployment Pipeline
 Are committers required to sign their commits, or a contributor license agreement?
 Yes
@@ -323,16 +354,25 @@ https://github.com/knative/community
 Are container images immutable and signed?
 Knative Services defines a Revision as immutable snapshots of a particular configuration
 https://github.com/knative/docs/blob/385ecbdc436fdd54c25e1add58527f247b6a8ce8/docs/serving/services/README.md
+
 ### Communication Channels
-This is a public Google group that Knative users can join for announcements and communication: https://groups.google.com/g/knative-users <br> This is a private Google group that developers in the Knative community can request to join to communicate announcements with each other: https://groups.google.com/g/knative-dev <br> The CNCF Slack has several dedicated Knative channels that developers can use for ease of communication: https://github.com/knative/community/blob/main/SLACK-GUIDELINES.md <br> The Knative community has monthly meetings where development and project groups are discussed. A public calendar can be found here: https://github.com/knative/community/blob/main/CALENDAR.MD 
+This is a public Google group that Knative users can join for announcements and communication: https://groups.google.com/g/knative-users 
+
+This is a private Google group that developers in the Knative community can request to join to communicate announcements with each other: https://groups.google.com/g/knative-dev 
+
+The CNCF Slack has several dedicated Knative channels that developers can use for ease of communication: https://github.com/knative/community/blob/main/SLACK-GUIDELINES.md 
+
+The Knative community has monthly meetings where development and project groups are discussed. A public calendar can be found here: https://github.com/knative/community/blob/main/CALENDAR.MD 
 ### Ecosystem
 Knative is built on the existing Kubernetes framework and provides components to build and run serverless applications on Kubernetes. Other projects in the ecosystem like Cloud Run are built on the Knative framework. 
 ## Security Issue Resolution
 Official Knative security policy https://knative.dev/docs/reference/security/ 
 ### Responsible Disclosure Practice
-Any user that finds a security issue can send a detailed email outlining the issue to security@knative.team. The team will respond within 3 business days and will determine whether the report constitutes a vulnerability, at which point they will open a security advisory.  (https://github.com/knative/community/blob/main/SECURITY.md) Certain parties can request to be notified of security vulnerabilities early. (https://github.com/knative/community/blob/main/SECURITY.md) However this is intended for close Knative partners, not individuals. <br> 
+Any user that finds a security issue can send a detailed email outlining the issue to security@knative.team. The team will respond within 3 business days and will determine whether the report constitutes a vulnerability, at which point they will open a security advisory.  (https://github.com/knative/community/blob/main/SECURITY.md) Certain parties can request to be notified of security vulnerabilities early. (https://github.com/knative/community/blob/main/SECURITY.md) However this is intended for close Knative partners, not individuals. 
 ### Incident Response
-The response policy is outlined here: https://github.com/knative/community/blob/main/working-groups/security/responding.md <br> A small team of Knative developers is included in the security@knative.team mailing. This team is kept small to avoid excessive disclosure of vulnerabilities. Each reported security issue is assigned a leader based on a rota that every team member must sign up for. This leader is responsible for determining whether the issue is indeed a vulnerability, in which case they will create a Github Security Advisory. All vulnerabilities are evaluated based on the Knative Threat Model, a work-in-progress model that can be viewed here: https://github.com/knative/community/blob/main/working-groups/security/threat-model.md The vulnerability is also given a Common Vulnerability Scoring System (CVSS) based on a calculator to help evaluate urgency. <br> 
+The response policy is outlined here: https://github.com/knative/community/blob/main/working-groups/security/responding.md 
+
+A small team of Knative developers is included in the security@knative.team mailing. This team is kept small to avoid excessive disclosure of vulnerabilities. Each reported security issue is assigned a leader based on a rota that every team member must sign up for. This leader is responsible for determining whether the issue is indeed a vulnerability, in which case they will create a Github Security Advisory. All vulnerabilities are evaluated based on the Knative Threat Model, a work-in-progress model that can be viewed here: https://github.com/knative/community/blob/main/working-groups/security/threat-model.md The vulnerability is also given a Common Vulnerability Scoring System (CVSS) based on a calculator to help evaluate urgency. 
 ## Appendix
 *Known issues over time*
 The dev team at Knative is continuously working towards making the platform better and more convenient for the end users. They have found certain issues which they are working on. Some of them include - 
