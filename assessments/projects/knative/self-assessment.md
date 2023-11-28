@@ -22,13 +22,13 @@ This document is intended to assess the current state of security for the Knativ
 | Software | https://github.com/knative/serving https://github.com/knative/eventing https://github.com/knative/func |
 | Security Provider? | No — the primary function of Knative is to provide a set of components and building blocks to extend Kubernetes functionality and should not be considered primarily a security provider. |
 | Languages | Go |
-| Software Bill of Materials | Packages: This Knative repo is a storage site for common Knative packages across all other Knative repositories for each component: https://github.com/knative/pkg \
-Each version release description contains a list of added or updated direct dependencies available to view. https://github.com/knative/func/releases https://github.com/knative/serving/releases https://github.com/knative/eventing/releases \
-However, all the Go libraries that Knative is dependent on are not readily available. Additionally, I cannot find a FULL auto-generated list of Knative’s direct dependencies other than the ones that were added or changed in each version release. This is a potential weakness and should be added to the roadmap. |
-| Security Links | Knative security and disclosure information: https://knative.dev/docs/reference/security/ \
-Knative threat model: https://github.com/knative/community/blob/main/working-groups/security/threat-model.md \
-Response policy to security breach: https://github.com/knative/community/blob/main/working-groups/security/responding.md \
-Configuration details for serving and eventing, including default configmaps: https://github.com/knative/serving/blob/main/config/README.md https://github.com/knative/eventing/tree/main/config |
+| Software Bill of Materials | Packages: This Knative repo is a storage site for common Knative packages across all other Knative repositories for each component: https://github.com/knative/pkg |
+| | Each version release description contains a list of added or updated direct dependencies available to view. https://github.com/knative/func/releases https://github.com/knative/serving/releases https://github.com/knative/eventing/releases |
+| |However, all the Go libraries that Knative is dependent on are not readily available. Additionally, I cannot find a FULL auto-generated list of Knative’s direct dependencies other than the ones that were added or changed in each version release. This is a potential weakness and should be added to the roadmap. |
+| Security Links | Knative security and disclosure information: https://knative.dev/docs/reference/security/ |
+| | Knative threat model: https://github.com/knative/community/blob/main/working-groups/security/threat-model.md | 
+| | Response policy to security breach: https://github.com/knative/community/blob/main/working-groups/security/responding.md |
+| | Configuration details for serving and eventing, including default configmaps: https://github.com/knative/serving/blob/main/config/README.md https://github.com/knative/eventing/tree/main/config |
 |-----------|------|
 ## Overview
 Knative is an open-source platform that enhances Kubernetes, focusing on the efficient deployment and management of serverless, cloud-native applications. It introduces two main components: Serving and Eventing. Serving automates the scaling and management of serverless workloads, while Eventing deals with event-driven architecture, managing and triggering serverless functions. This integration with Kubernetes not only streamlines the deployment process but also boosts developer productivity and reduces operational costs. Knative's cloud-agnostic nature and extensibility make it a versatile choice for diverse serverless computing environments.
@@ -372,9 +372,10 @@ multiple knative intermittents reconcile failure were observed, that is the cont
 
 *CII Best Practices*
 
-The KNative project has achieved the passing level criteria and is in the process of working towards attaining a silver badge in Open Source Security Foundation (OpenSSF) best practices badge - https://www.bestpractices.dev/en/projects/5913
+The Knative project has achieved the passing level criteria and is in the process of working towards attaining a silver badge in Open Source Security Foundation (OpenSSF) best practices badge - https://www.bestpractices.dev/en/projects/5913
 
 *Case studies* 
+
 Knative has been adopted by multiple organizations. Some of the cases studies are as follows:  
 - PNC Bank, one of the largest U.S. banks, faced a significant challenge with its manual 30-day compliance review process for new code, hindering efficient code deployment. Leveraging Knative, the cloud-native serverless and eventing framework, PNC developed internal tools, including the sophisticated Policy-as-Code service. This service, utilizing Knative's eventing and serverless capabilities, automates code compliance checks, providing an immediate pass/fail status for developers. By bridging processes between Apache Kafka and CI/CD toolchain events, PNC streamlined deployment, replacing a time-consuming manual process with near real-time compliance checks. The modular architecture enabled by Knative and TriggerMesh improved efficiency, allowing PNC to handle a vast technical infrastructure, with 6,000 application components benefiting from the automated compliance process. The result is faster code deployment, elimination of manual compliance delays, and enhanced productivity for PNC's large development teams.
 https://www.cncf.io/case-studies/pnc-bank/
