@@ -305,9 +305,9 @@ Security Goals -
 
 5. Container Image Security: As Knative involves building and deploying container images, the project is likely to emphasize best practices for securing container images, such as using signed images, regularly updating dependencies, and implementing image scanning for vulnerabilities.
 ### Non-Goals
-Long-Term Data Storage - KNative may not intend to provide a solution for long-term data storage. Users might be directed to leverage other storage solutions or databases that are better suited for persistent data.
-Direct Management of Kubernetes Resources - KNative might not aim to expose all the intricacies of Kubernetes resource management directly to end-users. The abstraction provided by KNative is designed to shield users from low-level Kubernetes operations.
-Fine-grained Network Security Policy - Knative may not aim to offer fine-grained network security policy management at the application level. Users are encouraged to leverage Kubernetes Network Policies or other networking solutions for such requirements.
+- Long-Term Data Storage - KNative may not intend to provide a solution for long-term data storage. Users might be directed to leverage other storage solutions or databases that are better suited for persistent data.
+- Direct Management of Kubernetes Resources - KNative might not aim to expose all the intricacies of Kubernetes resource management directly to end-users. The abstraction provided by KNative is designed to shield users from low-level Kubernetes operations.
+- Fine-grained Network Security Policy - Knative may not aim to offer fine-grained network security policy management at the application level. Users are encouraged to leverage Kubernetes Network Policies or other networking solutions for such requirements.
  
 ## Self-assessment Use
 This self-assessment is created by a team of cybersecurity students at NYU to perform an external analysis of the project's security. It is not intended to provide a security audit of Knative, or function as an independent assessment or attestation of Knative's security health.
@@ -332,28 +332,22 @@ Not enough information could be gathered to determine exactly what regulatory st
 The Knative project is still incubating. The security policies and development practices detailed below are based on open source guidelines and preliminary threat modeling. 
 
 ### Deployment Pipeline
-Are committers required to sign their commits, or a contributor license agreement?
-Yes
-https://github.com/knative/community/blob/21336731e0cbcca340a5560730ac28640460265f/CONTRIBUTING.md#contributor-license-agreements
-Do you have automated testing or fuzzing on every pull request?\
-No but a fuzzing audit was performed on Knative a couple of months ago
-https://knative.dev/blog/events/fuzzing-audit-2023/
-Do you have software composition analysis or dependency management tooling?
-How many reviewers are required for a pull request to be approved?
-At least one approved review by at least one of the approvers
-https://github.com/knative/community/blob/main/REVIEWING.md 
-Do you have any measures around code owners?
-Yes
-https://github.com/knative/community/blob/21336731e0cbcca340a5560730ac28640460265f/ROLES.md#member
-Is your release process automated?
-Does every release include an automatically generated Software Bill of Materials? 
-No, but a request for such a feature has been made 3 weeks ago
-https://github.com/oracle/graal/issues/7729
-Do you sign releases? Yes 
-https://github.com/knative/community
-Are container images immutable and signed?
-Knative Services defines a Revision as immutable snapshots of a particular configuration
-https://github.com/knative/docs/blob/385ecbdc436fdd54c25e1add58527f247b6a8ce8/docs/serving/services/README.md
+- Committers are required to sign the CNCF EasyCLA.
+    - https://github.com/knative/community/blob/21336731e0cbcca340a5560730ac28640460265f/CONTRIBUTING.md#contributor-license-agreements
+- Knative does not have fuzzing on every pull request, however a fuzzing audit was performed on Knative a couple of months ago
+    - https://knative.dev/blog/events/fuzzing-audit-2023/
+- At least one reviewer is required for a pull request to be approved
+    - https://github.com/knative/community/blob/main/REVIEWING.md 
+- Code owners must have multiple contributions, have active participation in the project, and be subscribed to the Knative development mailing list. Additionally, one must be nominated by two Knative Members (at least one of whom does not work for the same employer) in order to become a member.
+    - https://github.com/knative/community/blob/21336731e0cbcca340a5560730ac28640460265f/ROLES.md#member
+- Knative’s release process is not automated
+- Every release does not include an automatically generated Software Bill of Materials. However, a request for such a feature has been made 3 weeks ago
+    - https://github.com/oracle/graal/issues/7729
+- Releases are signed with cosign
+    - https://knative.dev/docs/reference/security/
+- Container images are immutable after a change has been made to its configuration
+    - https://github.com/knative/docs/blob/385ecbdc436fdd54c25e1add58527f247b6a8ce8/docs/serving/services/README.md
+
 
 ### Communication Channels
 This is a public Google group that Knative users can join for announcements and communication: https://groups.google.com/g/knative-users 
